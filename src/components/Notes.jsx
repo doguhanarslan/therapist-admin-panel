@@ -1,25 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {useLocation} from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+  const location = useLocation();
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [location.state?.refresh]);
   
   const fetchNotes = async () => {
     try {
       setLoading(true);
       const response = await axios.get('/personal_notes.php');
-      console.log('Notes response:', response.data);
-      setNotes(response.data?.notes || []);
+      
+      console.log('Notes response raw:', response);
+      console.log('Notes response data:', response.data);
+      
+      // Check if the expected structure exists
+      if (!response.data || !Array.isArray(response.data.notes)) {
+        console.error('Unexpected response format:', response.data);
+        setError('Received unexpected data format from server');
+        setNotes([]);
+        return;
+      }
+      
+      setNotes(response.data.notes);
       setError('');
     } catch (err) {
       console.error('Error fetching notes:', err);
+      console.error('Response:', err.response?.data);
       setNotes([]);
       setError('Failed to load notes. Please try again later.');
     } finally {

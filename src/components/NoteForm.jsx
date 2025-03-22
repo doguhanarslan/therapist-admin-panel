@@ -6,7 +6,6 @@ const NoteForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-  
   const [formData, setFormData] = useState({
     title: '',
     content: ''
@@ -24,16 +23,31 @@ const NoteForm = () => {
   const fetchNote = async () => {
     try {
       setLoading(true);
+      setError('');
+      
+      console.log(`Fetching note with ID: ${id}`);
       const response = await axios.get(`/personal_notes.php?id=${id}`);
+      
+      console.log('Note response:', response.data);
+      
+      // Validate the response structure
+      if (!response.data || !response.data.note) {
+        console.error('Invalid response format:', response.data);
+        setError('Received invalid data format from server');
+        return;
+      }
+      
       const note = response.data.note;
       
+      // Use default empty strings if properties are missing
       setFormData({
-        title: note.title,
-        content: note.content
+        title: note.title || '',
+        content: note.content || ''
       });
+      
     } catch (err) {
       console.error('Error fetching note:', err);
-      setError('Failed to load note data. Please try again later.');
+      setError(`Failed to load note data: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -72,7 +86,8 @@ const NoteForm = () => {
       
       // Redirect after short delay
       setTimeout(() => {
-        navigate('/notes');
+        // Add a timestamp to force the notes page to refetch data
+        navigate('/notes', { state: { refresh: Date.now() } });
       }, 1500);
       
     } catch (err) {

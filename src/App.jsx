@@ -12,7 +12,7 @@ import Navbar from './components/Navbar';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 
 // Set base URL for API requests from environment variables
-axios.defaults.baseURL = 'https://demo2.demo.doguhanarslan.com/api';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 axios.defaults.withCredentials = true; // Important for cookies
 axios.interceptors.request.use(
   config => {
