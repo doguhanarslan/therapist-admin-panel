@@ -15,10 +15,12 @@ const Sessions = () => {
     try {
       setLoading(true);
       const response = await axios.get('/sessions.php');
-      setSessions(response.data.sessions);
+      console.log('Sessions response:', response.data);
+      setSessions(response.data?.sessions || []);
       setError('');
     } catch (err) {
       console.error('Error fetching sessions:', err);
+      setSessions([]);
       setError('Failed to load sessions. Please try again later.');
     } finally {
       setLoading(false);

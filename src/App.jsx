@@ -14,7 +14,21 @@ import { AuthProvider, AuthContext } from './context/AuthContext';
 // Set base URL for API requests from environment variables
 axios.defaults.baseURL = 'https://demo2.demo.doguhanarslan.com/api';
 axios.defaults.withCredentials = true; // Important for cookies
+axios.interceptors.request.use(
+  config => {
+    console.log('Request headers:', config.headers);
+    return config;
+  },
+  error => Promise.reject(error)
+);
 
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('Response error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 function App() {
   return (
     <AuthProvider>

@@ -15,10 +15,12 @@ const Notes = () => {
     try {
       setLoading(true);
       const response = await axios.get('/personal_notes.php');
-      setNotes(response.data.notes);
+      console.log('Notes response:', response.data);
+      setNotes(response.data?.notes || []);
       setError('');
     } catch (err) {
       console.error('Error fetching notes:', err);
+      setNotes([]);
       setError('Failed to load notes. Please try again later.');
     } finally {
       setLoading(false);

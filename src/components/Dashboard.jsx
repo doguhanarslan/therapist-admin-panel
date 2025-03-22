@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+
 const Dashboard = () => {
   const [recentSessions, setRecentSessions] = useState([]);
   const [recentNotes, setRecentNotes] = useState([]);
@@ -11,13 +12,40 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Add debugging to see the actual responses
+        console.log('Fetching dashboard data...');
+        
+        const sessionsPromise = axios.get('/sessions.php')
+          .then(res => {
+            console.log('Sessions response:', res.data);
+            return res;
+          })
+          .catch(err => {
+            console.error('Sessions fetch error:', err.response?.data || err.message);
+            return { data: { sessions: [] } }; // Return empty array on error
+          });
+        
+        const notesPromise = axios.get('/personal_notes.php')
+          .then(res => {
+            console.log('Notes response:', res.data);
+            return res;
+          })
+          .catch(err => {
+            console.error('Notes fetch error:', err.response?.data || err.message);
+            return { data: { notes: [] } }; // Return empty array on error
+          });
+          
         const [sessionsRes, notesRes] = await Promise.all([
-          axios.get('/sessions.php'),
-          axios.get('/personal_notes.php')
+          sessionsPromise,
+          notesPromise
         ]);
         
-        setRecentSessions(sessionsRes.data.sessions.slice(0, 5));
-        setRecentNotes(notesRes.data.notes.slice(0, 5));
+        // Safely handle data that might be missing the expected structure
+        const sessions = sessionsRes.data?.sessions || [];
+        const notes = notesRes.data?.notes || [];
+        
+        setRecentSessions(sessions.slice(0, 5));
+        setRecentNotes(notes.slice(0, 5));
         setError('');
       } catch (error) {
         console.error('Error fetching dashboard data:', error);

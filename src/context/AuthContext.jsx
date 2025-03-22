@@ -14,6 +14,26 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
+      // Try to get token from localStorage
+      const token = localStorage.getItem('auth_token');
+      
+      if (token) {
+        // Set the token in axios headers
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Manually decode the token (simple method for now)
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1]));
+          if (payload.exp > Date.now() / 1000) {
+            setAuthenticated(true);
+            setUser(payload.data);
+            return;
+          }
+        }
+      }
+      
+      // If no valid token in localStorage, try the server check
       const response = await axios.get('/auth.php?check');
       if (response.data.authenticated) {
         setAuthenticated(true);
@@ -22,7 +42,8 @@ export const AuthProvider = ({ children }) => {
         setAuthenticated(false);
         setUser(null);
       }
-    } catch  {
+    } catch (error) {
+      console.error('Auth check error:', error);
       setAuthenticated(false);
       setUser(null);
     } finally {
@@ -33,10 +54,19 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post('/auth.php', { username, password });
+      console.log('Login response:', response.data);
+      
+      // If token is included in the response
+      if (response.data.token) {
+        localStorage.setItem('auth_token', response.data.token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+      }
+      
       setAuthenticated(true);
       setUser(response.data.user);
       return { success: true };
     } catch (error) {
+      console.error('Login error:', error);
       return { 
         success: false, 
         message: error.response?.data?.error || 'Login failed' 
@@ -48,6 +78,8 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post('/auth.php?logout');
     } finally {
+      localStorage.removeItem('auth_token');
+      delete axios.defaults.headers.common['Authorization'];
       setAuthenticated(false);
       setUser(null);
     }
