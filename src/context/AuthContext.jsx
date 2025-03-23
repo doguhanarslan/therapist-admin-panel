@@ -14,27 +14,10 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = async () => {
     try {
-      // Try to get token from localStorage
-      const token = localStorage.getItem('auth_token');
-      
-      if (token) {
-        // Set the token in axios headers
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        // Manually decode the token (simple method for now)
-        const parts = token.split('.');
-        if (parts.length === 3) {
-          const payload = JSON.parse(atob(parts[1]));
-          if (payload.exp > Date.now() / 1000) {
-            setAuthenticated(true);
-            setUser(payload.data);
-            return;
-          }
-        }
-      }
-      
-      // If no valid token in localStorage, try the server check
+      // Sadece sunucu tarafında kimlik doğrulama durumunu kontrol et
+      // HTTP-only cookie otomatik olarak istekle gönderilecek
       const response = await axios.get('/auth.php?check');
+      
       if (response.data.authenticated) {
         setAuthenticated(true);
         setUser(response.data.user);
@@ -56,11 +39,8 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post('/auth.php', { username, password });
       console.log('Login response:', response.data);
       
-      // If token is included in the response
-      if (response.data.token) {
-        localStorage.setItem('auth_token', response.data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      }
+      // Token artık HTTP-only cookie olarak saklanıyor
+      // localStorage veya headers ayarlamaya gerek yok
       
       setAuthenticated(true);
       setUser(response.data.user);
@@ -76,10 +56,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      // Bu istek, sunucu tarafında cookie'yi temizleyecek
       await axios.post('/auth.php?logout');
     } finally {
-      localStorage.removeItem('auth_token');
-      delete axios.defaults.headers.common['Authorization'];
+      // localStorage temizlemeye veya header silmeye gerek yok
+      // Sadece uygulama durumunu sıfırlamamız gerekiyor
       setAuthenticated(false);
       setUser(null);
     }
