@@ -51,24 +51,39 @@ const Notes = () => {
     }
   };
   
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('tr-TR', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+  
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mr-2"></div>
-          <span className="text-gray-600">Notlar yükleniyor...</span>
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex justify-center items-center py-16">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-green-500 border-t-transparent"></div>
+          <span className="ml-3 text-gray-600 font-medium">Notlar yükleniyor...</span>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Kişisel Notlar</h1>
+    <div className="container mx-auto px-4 py-6">
+      <div className="flex flex-wrap justify-between items-center mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Kişisel Notlar</h1>
         <Link
           to="/notes/new"
-          className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors"
+          className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors w-full md:w-auto justify-center"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -98,14 +113,17 @@ const Notes = () => {
             <div key={note.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 transition-all hover:shadow-lg">
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2 text-gray-800 truncate">{note.title}</div>
-                <p className="text-gray-700 text-base line-clamp-3 mb-3 h-18 overflow-hidden">
+                <p className="text-gray-700 text-base h-20 overflow-hidden mb-2">
                   {note.content}
                 </p>
-                <p className="text-gray-500 text-sm mt-4">
-                  {new Date(note.created_at).toLocaleString('tr-TR')}
-                </p>
+                <div className="flex items-center mt-4 text-gray-500 text-sm">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {formatDate(note.created_at)}
+                </div>
               </div>
-              <div className="px-6 pt-2 pb-4 border-t border-gray-100 bg-gray-50">
+              <div className="px-6 py-3 border-t border-gray-100 bg-gray-50">
                 <div className="flex justify-between">
                   <Link
                     to={`/notes/${note.id}`}
@@ -132,18 +150,21 @@ const Notes = () => {
         </div>
       ) : (
         <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          <p className="mt-4 text-gray-500">Henüz not bulunmuyor.</p>
+          <div className="h-16 w-16 bg-green-50 mx-auto rounded-full flex items-center justify-center mb-4">
+            <svg className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Henüz not bulunmuyor</h3>
+          <p className="text-gray-500 mb-6">Düşüncelerinizi, fikirlerinizi ve önemli bilgileri kaydetmeye başlayın</p>
           <Link
             to="/notes/new"
-            className="inline-flex items-center mt-6 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+            className="inline-flex items-center bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
             </svg>
-            İlk Notunuzu Ekleyin
+            İlk Notunuzu Oluşturun
           </Link>
         </div>
       )}

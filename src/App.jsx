@@ -12,10 +12,31 @@ import Navbar from './components/Navbar';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import './index.css';
 
-// Set base URL for API requests from environment variables
+// Axios yapılandırması
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
-axios.defaults.withCredentials = true; // Important for cookies
+axios.defaults.withCredentials = true;
 
+// Axios interceptor'ları
+axios.interceptors.request.use(
+  config => {
+    console.log('İstek gönderiliyor:', config.url);
+    return config;
+  },
+  error => {
+    console.error('İstek hatası:', error);
+    return Promise.reject(error);
+  }
+);
+
+axios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    console.error('Sunucu yanıt hatası:', error.response?.status, error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   return (
@@ -28,7 +49,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <Dashboard />
                   </div>
                 </div>
@@ -38,7 +59,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <Sessions />
                   </div>
                 </div>
@@ -48,7 +69,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <SessionForm />
                   </div>
                 </div>
@@ -58,7 +79,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <SessionForm />
                   </div>
                 </div>
@@ -68,7 +89,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <Notes />
                   </div>
                 </div>
@@ -78,7 +99,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <NoteForm />
                   </div>
                 </div>
@@ -88,7 +109,7 @@ function App() {
               <ProtectedRoute>
                 <div className="flex flex-col min-h-screen">
                   <Navbar />
-                  <div className="flex-grow pt-20 pb-10">
+                  <div className="flex-grow pt-16 pb-6 px-4 md:pt-20 md:pb-10">
                     <NoteForm />
                   </div>
                 </div>
@@ -108,7 +129,7 @@ function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="animate-pulse flex flex-col items-center">
+        <div className="flex flex-col items-center">
           <div className="h-12 w-12 rounded-full border-4 border-t-blue-500 border-blue-200 animate-spin mb-4"></div>
           <p className="text-gray-500 font-medium">Yükleniyor...</p>
         </div>

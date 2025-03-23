@@ -39,6 +39,15 @@ const Sessions = () => {
     }
   };
   
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('tr-TR');
+    } catch (e) {
+      return dateString;
+    }
+  };
+  
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -51,12 +60,12 @@ const Sessions = () => {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Danışan Seansları</h1>
+    <div className="container mx-auto px-4 py-6">
+      <div className="flex flex-wrap justify-between items-center mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-0">Danışan Seansları</h1>
         <Link
           to="/sessions/new"
-          className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+          className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors w-full md:w-auto justify-center"
         >
           <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -81,56 +90,100 @@ const Sessions = () => {
       )}
       
       {sessions.length > 0 ? (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Danışan Adı
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Seans Tarihi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Oluşturulma Tarihi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    İşlemler
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {sessions.map((session) => (
-                  <tr key={session.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{session.client_name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{new Date(session.session_date).toLocaleDateString('tr-TR')}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{new Date(session.created_at).toLocaleString('tr-TR')}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Link to={`/sessions/${session.id}`} className="text-blue-600 hover:text-blue-900 mr-4">
-                        Düzenle
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(session.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Sil
-                      </button>
-                    </td>
+        <div>
+          {/* Desktop görünüm - tablo */}
+          <div className="hidden md:block bg-white shadow-md rounded-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Danışan Adı
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Seans Tarihi
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Oluşturulma Tarihi
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      İşlemler
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {sessions.map((session) => (
+                    <tr key={session.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">{session.client_name}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{formatDate(session.session_date)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{formatDate(session.created_at)}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <Link to={`/sessions/${session.id}`} className="text-blue-600 hover:text-blue-900 mr-4">
+                          Düzenle
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(session.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Sil
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          {/* Mobil görünüm - kartlar */}
+          <div className="md:hidden space-y-4">
+            {sessions.map((session) => (
+              <div key={session.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                <div className="px-4 py-4 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-800">{session.client_name}</h3>
+                </div>
+                <div className="px-4 py-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-600">Seans Tarihi:</span>
+                    <span className="text-sm font-medium">{formatDate(session.session_date)}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Oluşturulma Tarihi:</span>
+                    <span className="text-sm">{formatDate(session.created_at)}</span>
+                  </div>
+                </div>
+                <div className="px-4 py-3 bg-gray-50 flex justify-between">
+                  <Link 
+                    to={`/sessions/${session.id}`}
+                    className="inline-flex items-center text-sm font-medium text-blue-600"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    Düzenle
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(session.id)}
+                    className="inline-flex items-center text-sm font-medium text-red-600"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Sil
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ) : (
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
+        <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
