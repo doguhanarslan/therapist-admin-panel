@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import LogoutButton from './LogoutButton'; // Yeni bileşeni içe aktarıyoruz
 
 const Navbar = () => {
-  const { user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -28,11 +28,6 @@ const Navbar = () => {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
-  
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
 
   const isActive = (path) => {
     return location.pathname === path ? 
@@ -77,12 +72,10 @@ const Navbar = () => {
                   </span>
                   <span className="ml-2 text-sm text-gray-700">{user?.username || 'Kullanıcı'}</span>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="bg-white text-red-600 border border-red-600 px-4 py-1.5 rounded-md text-sm font-medium hover:bg-red-50 transition-colors"
-                >
-                  Çıkış Yap
-                </button>
+                {/* Ayrı bir bileşen olarak düzeltilmiş çıkış butonu */}
+                <div className="w-28">
+                  <LogoutButton />
+                </div>
               </div>
             )}
           </div>
@@ -166,15 +159,8 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="absolute bottom-0 left-0 right-0 border-t p-4">
-            <button
-              onClick={handleLogout}
-              className="flex items-center justify-center w-full bg-red-50 text-red-600 py-2 px-4 rounded-md font-medium hover:bg-red-100 transition-colors"
-            >
-              <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Çıkış Yap
-            </button>
+            {/* Mobil görünümde LogoutButton bileşenini kullanıyoruz */}
+            <LogoutButton />
           </div>
         </div>
       </div>
