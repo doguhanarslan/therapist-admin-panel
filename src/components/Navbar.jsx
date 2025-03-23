@@ -73,7 +73,7 @@ const Navbar = () => {
                   <span className="ml-2 text-sm text-gray-700">{user?.username || 'Kullanıcı'}</span>
                 </div>
                 {/* Ayrı bir bileşen olarak düzeltilmiş çıkış butonu */}
-                <div className="w-28">
+                <div className="w-auto">
                   <LogoutButton />
                 </div>
               </div>
@@ -158,7 +158,7 @@ const Navbar = () => {
               Kişisel Notlar
             </Link>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 border-t p-4">
+          <div className="flex justify-start bottom-0 left-0 right-0 border-t p-4">
             {/* Mobil görünümde LogoutButton bileşenini kullanıyoruz */}
             <LogoutButton />
           </div>

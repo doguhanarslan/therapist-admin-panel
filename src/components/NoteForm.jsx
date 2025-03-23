@@ -183,14 +183,14 @@ const NoteForm = () => {
           <button
             type="button"
             onClick={() => navigate('/notes')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors"
+            className="bg-gray-200 hover:bg-gray-300 cursor-pointer text-gray-800 font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors"
             disabled={loading}
           >
             İptal
           </button>
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors disabled:opacity-70"
+            className="bg-green-600 hover:bg-green-700 cursor-pointer text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors disabled:opacity-70"
             disabled={loading}
           >
             {loading ? 'Kaydediliyor...' : isEditMode ? 'Notu Güncelle' : 'Not Oluştur'}

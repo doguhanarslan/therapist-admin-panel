@@ -189,14 +189,14 @@ const SessionForm = () => {
           <button
             type="button"
             onClick={() => navigate('/sessions')}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors"
+            className="bg-gray-200 cursor-pointer hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors"
             disabled={loading}
           >
             İptal
           </button>
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors disabled:opacity-70"
+            className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors disabled:opacity-70"
             disabled={loading}
           >
             {loading ? 'Kaydediliyor...' : isEditMode ? 'Seansı Güncelle' : 'Seans Oluştur'}
